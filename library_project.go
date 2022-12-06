@@ -65,6 +65,7 @@ func (lib *Library) checkIn(title string) {
 
 	book.status = Available
 	book.returned_at = time.Now()
+	book.lended_at = time.Time{}
 
 	member.books[index] = member.books[len(member.books)-1]
 	member.books = member.books[:len(member.books)-1]
@@ -104,6 +105,7 @@ func (lib *Library) checkOut(title string, member_name string) {
 
 	book.status = CheckedOut
 	book.lended_at = time.Now()
+	book.returned_at = time.Time{}
 
 	member.books = append(member.books, book)
 }
