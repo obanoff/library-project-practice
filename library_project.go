@@ -29,8 +29,45 @@ type Library struct {
 	members []*Member
 }
 
-func (lib *Library) checkIn(name string) {
+func (lib *Library) checkIn(title string) {
+	var book *Book
+	for _, b := range lib.books {
+		if b.name == title {
+			book = b
+			break
+		}
+	}
 
+	if book == nil {
+		fmt.Println("not allowed to return the book doesn't belong to the library")
+		return
+	}
+
+	if !book.status {
+		fmt.Println("not possible to return the book that's already located in the library")
+		return
+	}
+
+	var member *Member
+	var index int
+	for _, m := range lib.members {
+		for i, b := range m.books {
+			if b.name == title {
+				member = m
+				index = i
+				break
+			}
+		}
+		if member != nil {
+			break
+		}
+	}
+
+	book.status = Available
+	book.returned_at = time.Now()
+
+	member.books[index] = member.books[len(member.books)-1]
+	member.books = member.books[:len(member.books)-1]
 }
 
 func (lib *Library) checkOut(title string, member_name string) {
@@ -43,7 +80,7 @@ func (lib *Library) checkOut(title string, member_name string) {
 	}
 
 	if book == nil {
-		fmt.Println("book doesn't exist")
+		fmt.Println("there is no such the book in the library")
 		return
 	}
 
@@ -56,6 +93,7 @@ func (lib *Library) checkOut(title string, member_name string) {
 	for _, m := range lib.members {
 		if m.name == member_name {
 			member = m
+			break
 		}
 	}
 
@@ -163,14 +201,14 @@ func main() {
 		members: []*Member{&member1, &member2, &member3},
 	}
 
-	// library.info()
+	library.info()
 
-	// library.checkOut("Book1", "member1")
+	library.checkOut("Book1", "member1")
 
-	// library.info()
+	library.info()
 
 	library.checkIn("Book4")
 
-	// library.info()
+	library.info()
 
 }
